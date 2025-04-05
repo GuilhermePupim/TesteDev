@@ -50,6 +50,7 @@ type
     procedure btnConsDDDClick(Sender: TObject);
     procedure btnSalvarClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure btnConsUFClick(Sender: TObject);
   private
     cepResult: TCep;
     function ConsultarCEP(const ICep: string): TCep;
@@ -193,6 +194,39 @@ begin
     on E: Exception do
       ShowMessage('Erro ao salvar o CEP: ' + E.Message);
   end;
+end;
+
+procedure TForm1.btnConsUFClick(Sender: TObject);
+begin
+  FDQuery1.SQL.Clear;
+  FDQuery1.SQL.Text := 'SELECT * FROM public."TspdCep" WHERE uf = :uf';
+
+  FDQuery1.ParamByName('uf').AsString := EditUF.Text;
+  FDQuery1.Open;
+
+  if FDQuery1.RecordCount > 0 then
+  begin
+  try
+    FDQuery1.First;
+    RetornoJson.Lines.text := '';
+
+    while not FDQuery1.Eof do
+    begin
+      RetornoJson.Lines.Add(FDQuery1.FieldByName('cep').AsString + ' - ' + FDQuery1.FieldByName('localidade').AsString + ' - ' + FDQuery1.FieldByName('uf').AsString);
+
+      FDQuery1.Next;
+    end;
+  except
+    on e:Exception do
+      ShowMessage('Erro ao verificar UF no banco: ' + e.Message);
+  end;
+  end
+  else
+  begin
+    ShowMessage('Nenhuma UF encontrada.');
+  end;
+
+  FDQuery1.Close;
 end;
 
 procedure TForm1.btnConsultarClick(Sender: TObject);

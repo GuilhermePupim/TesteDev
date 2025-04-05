@@ -174,6 +174,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'Consultar UF'
     TabOrder = 13
+    OnClick = btnConsUFClick
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
